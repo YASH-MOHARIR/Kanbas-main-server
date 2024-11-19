@@ -15,7 +15,7 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: "https://a5--kanbas-yash-moharir.netlify.app/",
+    origin: "https://a5--kanbas-yash-moharir.netlify.app",
   })
  );
  const sessionOptions = {
