@@ -1,33 +1,40 @@
-import Database from "../Database/index.js";
+// import Database from "../Database/index.js";
+import model from "./model.js";
+import enrollmentsModel from "../Enrollments/model.js";
 
+
+// 1. Find all courses
 export function findAllCourses() {
-  return Database.courses;
+  return model.find();
 }
 
-export function findCoursesForEnrolledUser(userId) {
-  const { courses, enrollments } = Database;
-  const enrolledCourses = courses.filter((course) =>
-    enrollments.some((enrollment) => enrollment.user === userId && enrollment.course === course._id));
-  return enrolledCourses;
+// 2. Find courses for an enrolled user
+export async function findCoursesForEnrolledUser(userId) {
+  const enrollments = await enrollmentsModel.find({ user: userId });
+  const courseIds = enrollments.map((enrollment) => enrollment.course);
+  return model.find({ _id: { $in: courseIds } });
 }
+export async function findCoursesForUser(userId) {
+  const enrollments = await model.find({ user: userId }).populate("course");
+  console.log("Users Courses", enrollments);
+  return enrollments.map((enrollment) => enrollment.course);
+}
+
+// 3. Create a new course
+export function createCourse(course) {
+  delete course._id;
+  return model.create(course); 
+ }
  
 
-export function createCourse(course) {
-  const newCourse = { ...course, _id: Date.now().toString() };
-  Database.courses = [...Database.courses, newCourse];
-  return newCourse;
-}
-
+// 4. Delete a course
 export function deleteCourse(courseId) {
-  const { courses, enrollments } = Database;
-  Database.courses = courses.filter((course) => course._id !== courseId);
-  Database.enrollments = enrollments.filter(
-    (enrollment) => enrollment.course !== courseId
-);}
+  return model.deleteOne({ _id: courseId });
+ }
+ 
 
+// 5. Update a course
 export function updateCourse(courseId, courseUpdates) {
-  const { courses } = Database;
-  const course = courses.find((course) => course._id === courseId);
-  Object.assign(course, courseUpdates);
-  return course;
-}
+  return model.updateOne({ _id: courseId }, courseUpdates);
+ }
+ 
