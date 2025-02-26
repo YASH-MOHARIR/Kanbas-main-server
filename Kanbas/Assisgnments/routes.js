@@ -1,35 +1,35 @@
-import * as assignmentsDao from "./dao.js";
+import * as   assignmentsDao from "./dao.js";
  
 export default function AssignmentRoutes(app) {
 
-    app.get("/api/assignments/:courseID",(req,res) =>{
+    app.get("/api/assignments/:courseID",async (req,res) =>{
         const { courseID } = req.params;
-        const assignments = assignmentsDao.findCourseAssignment(courseID);
+        const assignments = await await assignmentsDao.findCourseAssignment(courseID);
         res.send(assignments);
     });
 
-    app.get("/api/assignments/:courseID/:assignmentID",(req,res) =>{
+    app.get("/api/assignments/:courseID/:assignmentID",async  (req,res) =>{
         const { courseID , assignmentID } = req.params;
-        const assignment = assignmentsDao.findAssignmentByID(courseID,assignmentID);
+        const assignment = await await assignmentsDao.findAssignmentByID(courseID,assignmentID);
         res.send(assignment);
     });
 
-    app.delete("/api/assignments/:courseID/:assignmentID",(req,res) =>{
+    app.delete("/api/assignments/:courseID/:assignmentID",async (req,res) =>{
         const { courseID ,assignmentID} = req.params;
-        const assignments = assignmentsDao.deleteAssignment(courseID,assignmentID);
+        const assignments = await assignmentsDao.deleteAssignment(courseID,assignmentID);
         res.send(assignments);
     });
 
-    app.post("/api/assignments/new",(req,res) =>{
+    app.post("/api/assignments/new",async (req,res) =>{
         const newAssignment = req.body 
-        const assignments = assignmentsDao.createAssignmetn(newAssignment);
+        const assignments = await assignmentsDao.createAssignmetn(newAssignment);
         res.send(assignments);
     });
 
-    app.put("/api/assignments/update",(req,res) =>{
+    app.put("/api/assignments/update",async (req,res) =>{
         const assignment = req.body;
         const aid = assignment._id; 
-        const assignments = assignmentsDao.updateAssignment(aid,assignment);
+        const assignments = await assignmentsDao.updateAssignment(aid,assignment);
         res.send(assignments);
     });
 
